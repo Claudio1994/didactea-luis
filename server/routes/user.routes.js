@@ -123,8 +123,8 @@ app.put('/updatePassword', (req, res) =>{
 });
 
 // Recuperar la contraseña
-app.get('/forgotPassword', (req, res) => {
-    let token = req.get('authorization');
+app.get('/forgotPassword/:token', (req, res) => {
+    let token = req.params.token;
 
     jwt.verify(token, process.env.SEED, (err, decoded) => {
         if( err ){
@@ -134,7 +134,10 @@ app.get('/forgotPassword', (req, res) => {
 
         }
 
-        console.log(`funca: ${decoded.ok}`);
+        res.json({
+            ok: true,
+            message: 'funciona'
+        })
 
     });
 });
