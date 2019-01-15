@@ -159,7 +159,8 @@ sendEmail = (token, res)=>{
         from: 'claudio.ore94@gmail.com',
         to: 'claudio.ore94@gmail.com',
         subject: 'Prueba email node',
-        text: `Contenido del email \n salto de linea \n localhost:3000/api/user/cambioContraseña/${token}` 
+        text: `Contenido del email \n salto de linea \n`,
+        html: `<a href="https://didactea.herokuapp.com/api/user/cambioContraseña/${token}">localhost:3000/api/user/cambioContraseña/${token}</a>`
     };
 
     // Enviamos el email
