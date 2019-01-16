@@ -15,6 +15,9 @@ const { authentication } = require('../middlewares/authentication');
 /* Instances */
 const app = express();
 
+/* Configurations */
+require('../config/config');
+
 /* Routes */
 
 // Obtiene los datos de la persona
