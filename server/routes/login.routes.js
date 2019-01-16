@@ -27,6 +27,7 @@ app.post('/', (req, res) => {
     //busco el email del usuario
     User.findOne({email})
         .then((userDB) => {
+
             //comparo la contraseña del usuario y si no es válida devuelvo un error
             if(!bcrypt.compareSync(password, userDB.password)){
                 return res.status(400).json({

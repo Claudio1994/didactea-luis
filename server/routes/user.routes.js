@@ -3,6 +3,7 @@ const express = require('express');
 const xss = require('xss');
 const jwt = require('jsonwebtoken');
 const nodemailer = require('nodemailer');
+const bcrypt = require('bcrypt');
 
 
 /* Models */
@@ -88,29 +89,39 @@ app.put('/update', authentication, (req, res) =>{
 });
 
 // Actualiza la contraseña
-app.put('/updatePassword', (req, res) =>{
+app.put('/updatePassword', authentication, (req, res) =>{
     
-    let { password } = req.body.password;
+    let { password, newPassword } = req.body;
 
     password = xss(password);
+    newPassword = xss(newPassword);
 
     User.findOne({email: req.user.email})
         .then((userDB) =>{
-            userDB.password = password ? bcrypt.hashSync(password, 10) : undefined;
+            if(bcrypt.compareSync(password, userDB.password)){
+                userDB.password = newPassword ? bcrypt.hashSync(newPassword, 10) : undefined;
     
-            userDB.save()
-                .then((userUpdated) => {
-                    res.json({
-                        ok: true,
-                        message: 'Contraseña actualizada'
+                userDB.save()
+                    .then((userUpdated) => {
+                        res.json({
+                            ok: true,
+                            message: 'Contraseña actualizada'
+                        });
+                    })
+                    .catch((error) => {
+                        res.status(400).json({
+                            ok: false,
+                            error
+                        });
                     });
-                })
-                .catch((error) => {
-                    res.status(400).json({
-                        ok: false,
-                        error
-                    });
+            }else{
+                res.status(400).json({
+                    ok: false,
+                    error: {
+                        message: 'Contraseña inválida'
+                    }
                 });
+            }
         })
         .catch((error) => {
             res.status(400).json({
@@ -122,48 +133,121 @@ app.put('/updatePassword', (req, res) =>{
         });
 });
 
-// Recuperar la contraseña
-app.get('/forgotPassword/:token', (req, res) => {
-    let token = req.params.token;
+// Envio de correo para recuperar contraseña
+app.get('/forgotPassword', (req, res) => {
 
-    jwt.verify(token, process.env.SEED, (err, decoded) => {
-        if( err ){
-            let tokenGenerado = jwt.sign({ok: true}, process.env.SEED, { expiresIn: process.env.CADUCIDAD_TOKEN });
+    let { email } = req.body;
 
-            return sendEmail(tokenGenerado, res);
+    User.findOne({email})
+        .then((userDB) =>{
+            //genero un nuevo token
+            let tokenGenerado = jwt.sign({
+                    ok: true,
+                    user: userDB
+                }, 
+                process.env.SEED, { expiresIn: 60*15 });
 
+            //funcion que envia un correo con el token generado o retorna un error
+            return sendEmail(tokenGenerado, res, email);
+        })
+        .catch((error) => {
+            return res.status(400).json({
+                ok: false,
+                error: {
+                    message: 'El email no existe'
+                }
+            });
+        });
+});
+
+// Compruebo que el token del email aún sea válido
+app.get('/checkTokenEmail', (req, res)=>{
+    let token = req.get('authorization');
+
+    jwt.verify(token, process.env.SEED, (error, decoded) => {
+        if(error){
+            return res.status(401).json({
+                ok: false,
+                error
+            });
         }
 
         res.json({
             ok: true,
-            message: 'funciona'
-        })
-
+            message: 'token válido'
+        });
     });
 });
 
+// Cambio la contraseña perdida
+app.put('/changeForgottenPassword', authentication, (req, res) => {
+    let { password } = req.body;
 
-/* Funciones */
+    let { email } = req.user;
+    
+    User.findOne({email})
+        .then((userDB) => {
+            password = xss(password);
+            userDB.password = password ? bcrypt.hashSync(password, 10) : undefined;
+            console.log('here');
+            
+            userDB.save()
+                .then((userUpdated) =>{
+                    res.json({
+                        ok: true,
+                        message: 'Contraseña actualizada'
+                    });
+                })
+                .catch((error) => {
+                    res.status(400).json({
+                        ok: false,
+                        error
+                    });
+                });
+
+        })
+        .catch((error) =>{
+            res.status(400).json({
+                ok: false,
+                error: {
+                    message: 'El email no existe'
+                }
+            })
+        });
+});
+
+
+// =====================
+//      Funciones 
+// ===================== 
 
 // Funcion para 
-sendEmail = (token, res)=>{
+sendEmail = (token, res, email)=>{
 
     // Definimos el transporter
     let transporter = nodemailer.createTransport({
         service: 'Gmail',
         auth: {
-            user: 'claudio.ore94@gmail.com',
-            pass: 'Soyalkoholiko'
+            user: 'claudio.desarrollador@gmail.com',
+            pass: process.env.PASSWORD
         }
     });
 
+    let url = "localhost:3000/changeForgottenPassword?token="+token;
+
+    let html = `<div>
+            <div> <h3>Haz click en el enlace para recuperar contraseña</h3></div>
+            <div>El link caducará en 15 minutos</div>
+            <div><a href="${url}">${url}</a><div>
+        </div>`;
+
     // Definimos el email
     let mailOptions = {
-        from: 'claudio.ore94@gmail.com',
-        to: 'claudio.ore94@gmail.com',
+        from: 'claudio.desarrollador@gmail.com',
+        to: email,
         subject: 'Prueba email node',
-        text: `Contenido del email \n salto de linea \n`,
-        html: `<a href="https://didactea.herokuapp.com/api/user/cambioContraseña/${token}">localhost:3000/api/user/cambioContraseña/${token}</a>`
+        text: '',
+        html
     };
 
     // Enviamos el email
@@ -176,10 +260,9 @@ sendEmail = (token, res)=>{
             });
         }
 
-        console.log("Email sent");
         res.json({
             ok: true,
-            message: 'Email enviado'
+            message: 'Se ha enviado un email a tu correo'
         });
     });
 };
