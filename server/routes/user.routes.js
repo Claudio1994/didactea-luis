@@ -233,7 +233,7 @@ sendEmail = (token, res, email)=>{
         }
     });
 
-    let url = "localhost:3000/changeForgottenPassword?token="+token;
+    let url = `${process.env.URL}/changeForgottenPassword?token=+${token}`;
 
     let html = `<div>
             <div> <h3>Haz click en el enlace para recuperar contraseña</h3></div>

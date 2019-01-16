@@ -10,5 +10,9 @@ process.env.SEED = process.env.SEED || 'este-es-el-seed-desarrollo';
 
 // email
 process.env.email = process.env.email;
-
+ 
+// Password
 process.env.PASSWORD = process.env.PASSWORD;
+
+// URL
+process.env.URL = process.env.URL || 'localhost:3000';
