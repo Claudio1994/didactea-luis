@@ -99,7 +99,7 @@ app.post('/create', authentication, (req, res)=> {
     //muevo la foto a carpeta 
     image.mv(`public/uploads/${nombreImagen}`, (error) => {
         if(error){
-            res.status(500).json({
+            return res.status(500).json({
                 ok: false,
                 error
             });
