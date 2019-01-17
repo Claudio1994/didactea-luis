@@ -97,9 +97,9 @@ app.post('/create', authentication, async (req, res)=> {
     let nombreImagen = `${nombreCortado.join('.')}-${new Date().getMilliseconds()}.${extension}`
 
     //muevo la foto a carpeta 
-    await image.mv(`public/uploads/${nombreImagen}`, (error) => {
+    await image.mv(path.join('public','uploads',nombreImagen), (error) => {
         if(error){
-            return res.status(500).json({
+            return res.status(400).json({
                 ok: false,
                 error
             });
