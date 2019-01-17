@@ -20,9 +20,21 @@ app.use(fileUpload());
 app.get('/', (req, res) => {
     Product.find()
         .then((ProductDB)=>{
+            
+            let products = ProductDB.map((product)=>{
+                return ({
+                    name: product.name,
+                    description: product.description,
+                    contentType: product.image.contentType,
+                    image: product.image.data.toString('base64')
+                });
+            });
+
+            console.log(products);
+
             res.json({
                 ok: true,
-                products: ProductDB
+                products
             })
         })
         .catch((error)=> {
@@ -34,16 +46,20 @@ app.get('/', (req, res) => {
 });
 
 //Obtener un producto por id
-app.get('/id', (req, res) =>{
-    let { id } = req.body;
+app.get('/:id', (req, res) =>{
+    let { id } = req.params;
     id = xss(id);
-    console.log(id);
     Product.findById(id)
         .then((productDB)=>{
-            res.json({
+            let base64 = productDB.image.data.toString('base64');
+            let contentType = productDB.image.contentType;
+
+             res.json({
                 ok: true,
                 message: 'Producto encontrado exitosamente',
-                product: productDB
+                product: productDB,
+                image: base64,
+                contentType
             });
         })
         .catch((error)=>{
@@ -93,7 +109,7 @@ app.post('/create', authentication, async (req, res)=> {
         });
     }
 
-    //creo un nombre de archivo único
+    /* //creo un nombre de archivo único
     let nombreImagen = `${nombreCortado.join('.')}-${new Date().getMilliseconds()}.${extension}`
 
     //muevo la foto a carpeta 
@@ -104,14 +120,16 @@ app.post('/create', authentication, async (req, res)=> {
                 error
             });
         }
-    });
+    }); */
 
     //creo un objeto para guardar
     let product = new Product({
         name,
         description: description ? description : '',
-        image: nombreImagen
     });
+
+    product.image.data = image.data;
+    product.image.contentType = `img/${extension}`;
     
     //guardo el objeto
     product.save()
@@ -125,7 +143,7 @@ app.post('/create', authentication, async (req, res)=> {
         })
         .catch((error)=>{
             //no se ha podido guardar
-            deleteFile(nombreImagen);
+            //deleteFile(nombreImagen);
 
             res.status(400).json({
                 ok: false,

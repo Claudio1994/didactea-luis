@@ -15,7 +15,7 @@ class App extends Component {
   }
 
   getImages = () => {
-    axios.get('/api/product')
+    axios.get('/api/product/')
       .then((data)=>{
         this.setState({
           images: data.data.products
@@ -66,18 +66,22 @@ class App extends Component {
         <section class={`ae-container-fluid ae-container-fluid--inner rk-portfolio ${styles.marginTop15}`}>
         <div  class="ae-masonry ae-masonry-md-2 ae-masonry-xl-4">
 
-        {this.state.images && 
+
+        
+          {
+          this.state.images && 
           this.state.images.map((image)=>{
           return(
             <a key="image.id" href="portfolio-item.html" class="rk-item ae-masonry__item">
-              <img src={`/uploads/${image.image}`} alt=""/>
+              <img src={`data:${image.contetType};base64,${image.image}`} alt=""/>
               <div class="item-meta">
                 <h2>{image.name}</h2>
                 <p>{image.description}</p>
               </div>
             </a>);
           
-        })}
+          })
+          }
         </div>
         </section>
         </section>
