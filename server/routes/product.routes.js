@@ -97,7 +97,7 @@ app.post('/create', authentication, (req, res)=> {
     let nombreImagen = `${nombreCortado.join('.')}-${new Date().getMilliseconds()}.${extension}`
 
     //muevo la foto a carpeta 
-    image.mv(`client/public/uploads/${nombreImagen}`, (error) => {
+    image.mv(`public/uploads/${nombreImagen}`, (error) => {
         if(error){
             res.status(500).json({
                 ok: false,
@@ -169,7 +169,7 @@ app.put('/update', authentication, (req, res) => {
                 nombreImagen = `${nombreCortado.join('.')}-${new Date().getMilliseconds()}.${extension}`
     
                 //muevo la foto a carpeta 
-                image.mv(`client/public/uploads/${nombreImagen}`, (error) => {
+                image.mv(`public/uploads/${nombreImagen}`, (error) => {
                     if(error){
                         return res.status(500).json({
                             ok: false,
@@ -247,7 +247,7 @@ app.delete('/delete',authentication, (req, res)=>{
 // ===============================
 
 let deleteFile = (nameImage) => {
-    let pathImage = path.resolve(__dirname,`../../client/public/uploads/${nameImage}`);
+    let pathImage = path.resolve(__dirname,`../../public/uploads/${nameImage}`);
 
     if(fs.existsSync(pathImage)){
         fs.unlinkSync(pathImage);
