@@ -66,8 +66,6 @@ class App extends Component {
         <section class={`ae-container-fluid ae-container-fluid--inner rk-portfolio ${styles.marginTop15}`}>
         <div  class="ae-masonry ae-masonry-md-2 ae-masonry-xl-4">
 
-
-        
           {
           this.state.images && 
           this.state.images.map((image)=>{
