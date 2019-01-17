@@ -11,7 +11,6 @@ class App extends Component {
       images: []
     }
 
-    //this.getImages = this.getImages.bind(this);
     this.getImages();
   }
 
