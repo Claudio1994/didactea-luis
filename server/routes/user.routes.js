@@ -66,7 +66,7 @@ app.put('/update', authentication, (req, res) =>{
                 .then((userUpdated) => {
                     let token = jwt.sign({
                         user: userDB
-                    }, process.env.SEED, { expiresIn: process.env.CADUCIDAD_TOKEN });
+                    }, process.env.SEED, { expiresIn: CADUCIDAD_TOKEN });
 
                     res.json({
                         ok: true,
