@@ -1,0 +1,19 @@
+:local(.colorWhite){
+    color: white;
+}
+
+:local(.bgColorRebeccapurple){
+    background-color: purple;
+}
+
+:local(.marginTop5){
+    margin-top: 15px;
+}
+
+:local(.marginTop10){
+    margin-top: 30px;
+}
+
+:local(.marginTop15){
+    margin-top: 45px;
+}

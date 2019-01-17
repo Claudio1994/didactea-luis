@@ -221,10 +221,10 @@ app.put('/changeForgottenPassword', authentication, (req, res) => {
 
 
 // =====================
-//      Funciones 
+//      Functions 
 // ===================== 
 
-// Funcion para 
+// Funcion para enviar email
 sendEmail = (token, res, email)=>{
 
     // Definimos el transporter
@@ -248,7 +248,7 @@ sendEmail = (token, res, email)=>{
     let mailOptions = {
         from: 'claudio.desarrollador@gmail.com',
         to: email,
-        subject: 'Prueba email node',
+        subject: 'Recuperar contraseña didactea',
         text: '',
         html
     };

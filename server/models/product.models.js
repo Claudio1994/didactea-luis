@@ -10,12 +10,10 @@ const productSchema = new Schema({
     description:{
         type: String
     },
-    images: [
-        {
-            type: Schema.Types.ObjectId,
-            ref: 'Image'
-        }
-    ]
+    image: {
+        type: String,
+        required: [true, 'Ingrese una imagen'] 
+    }
 });
 
 module.exports = mongoose.model('Product', productSchema);

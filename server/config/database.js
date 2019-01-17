@@ -7,7 +7,7 @@ let URI;
 if(process.env.prod === 'local'){
     URI = 'mongodb://localhost/didactea';
 }else{
-    URI = `mongodb://${process.env.DBUSER}:${process.env.DBPASS}@ds133094.mlab.com:33094/didactea-luis`;
+    URI = process.env.URI;
 }
 
 
