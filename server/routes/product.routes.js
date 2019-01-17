@@ -57,7 +57,7 @@ app.get('/id', (req, res) =>{
 });
 
 // Agregar Producto
-app.post('/create', authentication, (req, res)=> {
+app.post('/create', authentication, async (req, res)=> {
     //variables
     let { name, description } = req.body;
     
@@ -97,7 +97,7 @@ app.post('/create', authentication, (req, res)=> {
     let nombreImagen = `${nombreCortado.join('.')}-${new Date().getMilliseconds()}.${extension}`
 
     //muevo la foto a carpeta 
-    image.mv(`public/uploads/${nombreImagen}`, (error) => {
+    await image.mv(`public/uploads/${nombreImagen}`, (error) => {
         if(error){
             return res.status(500).json({
                 ok: false,
