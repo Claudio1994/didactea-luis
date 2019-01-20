@@ -19,22 +19,11 @@ app.use(fileUpload());
 //Obtener todos los productos
 app.get('/', (req, res) => {
     Product.find()
-        .then((ProductDB)=>{
-            
-            let products = ProductDB.map((product)=>{
-                return ({
-                    name: product.name,
-                    description: product.description,
-                    contentType: product.image.contentType,
-                    image: product.image.data.toString('base64')
-                });
-            });
-
-            console.log(products);
+        .then((productDB)=>{
 
             res.json({
                 ok: true,
-                products
+                products: productDB
             })
         })
         .catch((error)=> {
@@ -51,15 +40,11 @@ app.get('/:id', (req, res) =>{
     id = xss(id);
     Product.findById(id)
         .then((productDB)=>{
-            let base64 = productDB.image.data.toString('base64');
-            let contentType = productDB.image.contentType;
 
              res.json({
                 ok: true,
                 message: 'Producto encontrado exitosamente',
                 product: productDB,
-                image: base64,
-                contentType
             });
         })
         .catch((error)=>{
@@ -109,27 +94,14 @@ app.post('/create', authentication, async (req, res)=> {
         });
     }
 
-    /* //creo un nombre de archivo único
-    let nombreImagen = `${nombreCortado.join('.')}-${new Date().getMilliseconds()}.${extension}`
-
-    //muevo la foto a carpeta 
-    await image.mv(path.join(__dirname,`../../public/uploads/${nombreImagen}`), (error) => {
-        if(error){
-            return res.status(400).json({
-                ok: false,
-                error
-            });
-        }
-    }); */
-
     //creo un objeto para guardar
     let product = new Product({
         name,
         description: description ? description : '',
     });
 
-    product.image.data = image.data;
-    product.image.contentType = `img/${extension}`;
+    product.image = image.data.toString('base64');
+    product.contentType = `img/${extension}`;
     
     //guardo el objeto
     product.save()
@@ -162,16 +134,14 @@ app.put('/update', authentication, (req, res) => {
     Product.findById(id)
         .then((productDB) =>{
             let image;
-            let nombreImagen;
             if(req.files){
-
                 //obtengo la extension del archivo
                 image = req.files.image;
                 let nombreCortado = image.name.split('.');
                 let extension = nombreCortado.pop();
                 //extensiones permitidas
                 let extensionesPermitidas = ['jpg', 'png', 'jpeg'];
-    
+                
                 //compruebo que la extension del archivo sea permitida
                 if(extensionesPermitidas.indexOf(extension) < 0){
                     return res.status(400).json({
@@ -182,35 +152,17 @@ app.put('/update', authentication, (req, res) => {
                         extensiones: extensionesPermitidas
                     });
                 }
-    
-                //creo un nombre de archivo único
-                nombreImagen = `${nombreCortado.join('.')}-${new Date().getMilliseconds()}.${extension}`
-    
-                //muevo la foto a carpeta 
-                image.mv(`public/uploads/${nombreImagen}`, (error) => {
-                    if(error){
-                        return res.status(500).json({
-                            ok: false,
-                            error
-                        });
-                    }
-                });
+                
+                productDB.image = image.data.toString('base64');
+                productDB.contentType = `img/${extension}`;
             }
-
-            let beforeNameImage = productDB.image;
 
             productDB.name = name ? name : productDB.name;
             productDB.description = description ? description : productDB.description;
-            productDB.image = nombreImagen ? nombreImagen : productDB.image;
 
 
             productDB.save()
                 .then((productUpdated)=> {
-                    //elimino la imagen que estaba antes
-                    if(productDB.image !== beforeNameImage){
-                        deleteFile(beforeNameImage);
-                    }
-
                     res.json({
                         ok: true,
                         message: 'Producto actualizado correctamente',
@@ -218,18 +170,20 @@ app.put('/update', authentication, (req, res) => {
                     });
                 })
                 .catch((error) => {
-                    //elimino la imagen que se ha subido por que ha ocurrido un error
-                    deleteFile(nombreImagen);
                     res.status(400).json({
                         ok: false,
-                        error
+                        error: {
+                            message: 'No se ha podido actualizar'
+                        }
                     });
                 });
         })
         .catch((error) =>{
             res.status(400).json({
                 ok: false,
-                error
+                error: {
+                    message: 'No se ha encontrado el producto'
+                }
             });
         });
 });
@@ -241,8 +195,6 @@ app.delete('/delete',authentication, (req, res)=>{
 
     Product.findByIdAndRemove(id)
         .then((productDB)=>{
-            //elimino del server la imagen
-            deleteFile(productDB.image);
             res.json({
                 ok: true,
                 message: 'Producto elminado exitosamente',
@@ -263,13 +215,5 @@ app.delete('/delete',authentication, (req, res)=>{
 // ===============================
 //           Functions
 // ===============================
-
-let deleteFile = (nameImage) => {
-    let pathImage = path.resolve(__dirname,`../../public/uploads/${nameImage}`);
-
-    if(fs.existsSync(pathImage)){
-        fs.unlinkSync(pathImage);
-    }
-}
 
 module.exports = app;

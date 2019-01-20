@@ -11,18 +11,13 @@ const productSchema = new Schema({
         type: String
     },
     image: {
-        data: Buffer,
-        contentType: String
+        type: String,
+        required: [true, 'La imagen es requerida']
+    },
+    contentType: {
+        type: String,
+        required: [true, 'El contentType de la imagen es requerido']
     }
 });
-
-productSchema.methods.toJSON = function(){
-    let user = this;
-    
-    let userObject = user.toObject();
-    delete userObject.image;
-
-    return userObject;
-}
 
 module.exports = mongoose.model('Product', productSchema);
