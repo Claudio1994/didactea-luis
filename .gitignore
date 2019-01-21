@@ -1,5 +1,5 @@
-/node_modules40px
+/node_modules
 
 /client/src
 
-/client/css
+/client/node_modules
