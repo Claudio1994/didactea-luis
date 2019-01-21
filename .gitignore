@@ -3,3 +3,5 @@
 /client/src
 
 /client/node_modules
+
+/client/build
