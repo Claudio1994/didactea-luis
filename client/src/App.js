@@ -6,7 +6,6 @@ import Footer from './Components/footer';
 import PropTypes from 'prop-types';
 
 
-
 class App extends Component {
 
   render() {

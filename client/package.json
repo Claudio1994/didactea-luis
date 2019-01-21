@@ -5,6 +5,8 @@
   "dependencies": {
     "@material-ui/core": "^3.9.0",
     "axios": "^0.18.0",
+    "i": "^0.3.6",
+    "npm": "^6.6.0",
     "prop-types": "^15.6.2",
     "react": "^16.7.0",
     "react-dom": "^16.7.0",
