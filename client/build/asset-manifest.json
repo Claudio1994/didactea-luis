@@ -1,11 +1,11 @@
 {
-  "main.css": "/static/css/main.ca53e64e.chunk.css",
-  "main.js": "/static/js/main.a01845e9.chunk.js",
-  "static/js/1.143843f6.chunk.js": "/static/js/1.143843f6.chunk.js",
+  "main.css": "/static/css/main.2ac07f1d.chunk.css",
+  "main.js": "/static/js/main.53170e52.chunk.js",
+  "static/js/1.ddc57153.chunk.js": "/static/js/1.ddc57153.chunk.js",
   "runtime~main.js": "/static/js/runtime~main.229c360f.js",
   "static/media/facebook.png": "/static/media/facebook.6163476d.png",
-  "static/media/aurora-theme-base.min.css": "/static/media/aileron-regular.030922a3.woff",
+  "static/media/aurora-theme-base.min.css": "/static/media/aileron-semibold.120283a4.woff2",
   "index.html": "/index.html",
-  "precache-manifest.17d038a108f96a78f34c3d4207f47354.js": "/precache-manifest.17d038a108f96a78f34c3d4207f47354.js",
+  "precache-manifest.5b0546a596392ad3200de3fe56581979.js": "/precache-manifest.5b0546a596392ad3200de3fe56581979.js",
   "service-worker.js": "/service-worker.js"
 }
