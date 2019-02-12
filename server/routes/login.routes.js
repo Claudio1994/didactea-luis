@@ -18,6 +18,7 @@ require('../config/config');
 // Login
 app.post('/', (req, res) => {
     // obtengo inputs
+    console.log(req.body);
     let { email, password } = req.body;
 
     //quito los caracteres no permitidos

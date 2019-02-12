@@ -188,8 +188,8 @@ app.put('/update', authentication, (req, res) => {
         });
 });
 
-app.delete('/delete',authentication, (req, res)=>{
-    let { id } = req.body;
+app.delete('/delete/:id'/* ,authentication */, (req, res)=>{
+    let { id } = req.params;
 
     id = xss(id);
 
