@@ -1,9 +1,11 @@
+/* Libraries */
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 
+/* Components */
 import Header from './Components/header';
 import Main from './Components/main';
 import Footer from './Components/footer';
-import PropTypes from 'prop-types';
 
 
 class App extends Component {

@@ -4,11 +4,12 @@ import AppRoutes from './routes';
 import * as serviceWorker from './serviceWorker';
 import {Provider} from 'react-redux';
 import { store } from './store';
-import { BrowserRouter as Router } from 'react-router-dom';
+import { Router } from 'react-router-dom';
+import history from './router/history';
 
 ReactDOM.render(
 <Provider store={store}>
-    <Router>
+    <Router history={history}>
         <AppRoutes/>
     </Router>
 </Provider>, document.getElementById('root'));

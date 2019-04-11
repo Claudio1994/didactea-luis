@@ -58,28 +58,28 @@ app.get('/:id', (req, res) =>{
 });
 
 // Agregar Producto
-app.post('/create', authentication, async (req, res)=> {
+app.post('/create',/*  authentication, */ async (req, res)=> {
     //variables
-    let { name, description } = req.body;
+    let { name, description, image } = req.body;
     
     //seguridad xss
     name = xss(name);
     description = xss(description);
+    image = xss(image);
     
     //comprobar que han subido un archivo
-    if(!req.files){
+    if(!image){
         return res.status(400).json({
             ok: false,
             error: {
-                message: 'No se ha seleccionado ningún archivo'
+                message: 'No se ha seleccionado ninguna imagen'
             }
         });
     }
     
     //obtengo la extension del archivo
-    let image = req.files.image;
-    let nombreCortado = image.name.split('.');
-    let extension = nombreCortado.pop();
+    let nombreCortado = image.split(';base64');
+    let extension = nombreCortado[0].split(':image/')[1];
     //extensiones permitidas
     let extensionesPermitidas = ['jpg', 'png', 'jpeg'];
 
@@ -98,9 +98,9 @@ app.post('/create', authentication, async (req, res)=> {
     let product = new Product({
         name,
         description: description ? description : '',
+        image
     });
 
-    product.image = image.data.toString('base64');
     product.contentType = `img/${extension}`;
     
     //guardo el objeto
@@ -119,26 +119,27 @@ app.post('/create', authentication, async (req, res)=> {
 
             res.status(400).json({
                 ok: false,
-                error
+                error: {
+                    message: 'No se ha podido agregar el producto'
+                }
             });
         });
 });
 
-app.put('/update', authentication, (req, res) => {
-    
-    let { name, description, id } = req.body;
+app.put('/update', /* authentication, */ (req, res) => {
+    let { name, description, id, image } = req.body;
     name = xss(name);
     description = xss(description);
     id = xss(id);
+    image = xss(image);
 
     Product.findById(id)
         .then((productDB) =>{
-            let image;
-            if(req.files){
+            if(image){
                 //obtengo la extension del archivo
-                image = req.files.image;
-                let nombreCortado = image.name.split('.');
-                let extension = nombreCortado.pop();
+                let nombreCortado = image.split(';base64');
+                let extension = nombreCortado[0].split(':image/')[1];
+                console.log(extension);
                 //extensiones permitidas
                 let extensionesPermitidas = ['jpg', 'png', 'jpeg'];
                 
@@ -153,7 +154,7 @@ app.put('/update', authentication, (req, res) => {
                     });
                 }
                 
-                productDB.image = image.data.toString('base64');
+                productDB.image = image;
                 productDB.contentType = `img/${extension}`;
             }
 
@@ -188,7 +189,7 @@ app.put('/update', authentication, (req, res) => {
         });
 });
 
-app.delete('/delete/:id',authentication , (req, res)=>{
+app.delete('/delete/:id',/* authentication , */ (req, res)=>{
     let { id } = req.params;
 
     id = xss(id);
