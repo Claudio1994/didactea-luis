@@ -1,0 +1,12 @@
+
+
+export const ADD_PRODUCT = 'ADD_PRODUCT';
+export const EDIT_PROFILE_MENU = 'EDIT_PROFILE_MENU';
+export const UPDATE_SENT = 'UPDATE_SENT';
+export const OPEN_PRODUCT_FORM = 'OPEN_PRODUCT_FORM';
+export const OPEN_DELETE_POPUP = 'OPEN_DELETE_POPUP';
+export const PRODUCT_DELETED = 'PRODUCT_DELETED';
+export const OPEN_MODAL = 'OPEN_MODAL';
+export const MESSAGE_UPDATE = 'MESSAGE_UPDATE';
+export const GET_PRODUCTS = 'GET_PRODUCTS';
+export const USER_LOGIN = 'USER_LOGIN';
