@@ -58,7 +58,7 @@ app.get('/:id', (req, res) =>{
 });
 
 // Agregar Producto
-app.post('/create',/*  authentication, */ async (req, res)=> {
+app.post('/create', authentication, async (req, res)=> {
     //variables
     let { name, description, image } = req.body;
     
@@ -126,7 +126,7 @@ app.post('/create',/*  authentication, */ async (req, res)=> {
         });
 });
 
-app.put('/update', /* authentication, */ (req, res) => {
+app.put('/update', authentication,  (req, res) => {
     let { name, description, id, image } = req.body;
     name = xss(name);
     description = xss(description);
@@ -189,7 +189,7 @@ app.put('/update', /* authentication, */ (req, res) => {
         });
 });
 
-app.delete('/delete/:id',/* authentication , */ (req, res)=>{
+app.delete('/delete/:id',authentication , (req, res)=>{
     let { id } = req.params;
 
     id = xss(id);
