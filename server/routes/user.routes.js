@@ -231,7 +231,7 @@ sendEmail = (token, res, email)=>{
     let transporter = nodemailer.createTransport({
         service: 'Gmail',
         auth: {
-            user: 'claudio.desarrollador@gmail.com',
+            user: process.env.email,
             pass: process.env.PASSWORD
         }
     });
@@ -246,7 +246,7 @@ sendEmail = (token, res, email)=>{
 
     // Definimos el email
     let mailOptions = {
-        from: 'claudio.desarrollador@gmail.com',
+        from: process.env.email,
         to: email,
         subject: 'Recuperar contraseña didactea',
         text: '',
